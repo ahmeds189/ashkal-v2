@@ -27,7 +27,9 @@ export default function Header() {
           </Link>
         </SignedOut>
 
-        <UserProfile />
+        <SignedIn>
+          <UserProfile />
+        </SignedIn>
 
         <MobileSheet />
       </div>

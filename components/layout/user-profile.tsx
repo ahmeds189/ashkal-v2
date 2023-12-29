@@ -15,15 +15,13 @@ export default function UserProfile() {
     )
 
   return (
-    <SignedIn>
-      <UserButton
-        afterSignOutUrl='/'
-        appearance={{
-          elements: {
-            rootBox: 'justify-self-end',
-          },
-        }}
-      />
-    </SignedIn>
+    <UserButton
+      afterSignOutUrl='/'
+      appearance={{
+        elements: {
+          rootBox: 'justify-self-end',
+        },
+      }}
+    />
   )
 }
