@@ -1,6 +1,10 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
+import { User } from '@prisma/client'
+import { createUserAction } from '@/lib/actions/user.actions'
+import { clerkClient } from '@clerk/nextjs'
+import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
@@ -50,6 +54,33 @@ export async function POST(req: Request) {
   // Get the ID and type
   const { id } = evt.data
   const eventType = evt.type
+
+  // start syncing
+  if (eventType === 'user.created') {
+    const { id, email_addresses, username, first_name, last_name, image_url } =
+      evt.data
+
+    const user: User = {
+      clerkID: id,
+      email: email_addresses[0].email_address,
+      username,
+      firstName: first_name,
+      lastName: last_name,
+      photo: image_url,
+    }
+
+    const newUser = await createUserAction(user)
+
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser.clerkID,
+        },
+      })
+    }
+
+    return NextResponse.json({ message: 'OK', user: newUser })
+  }
 
   return new Response('', { status: 200 })
 }

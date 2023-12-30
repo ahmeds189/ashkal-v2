@@ -8,5 +8,12 @@ datasource db {
 }
 
 model User {
-  clerkID String @id @map("_id")
+  clerkID   String  @id @default(auto()) @map("_id") @db.ObjectId
+  email     String  @unique
+  username  String? @unique
+  firstName String?
+  lastName  String?
+  photo     String?
+
+  @@map("users")
 }
