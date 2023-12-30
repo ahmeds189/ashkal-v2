@@ -1,7 +1,6 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { type User } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import { createUserAction } from '@/lib/actions/user.actions'
@@ -60,7 +59,7 @@ export async function POST(req: Request) {
     const { id, email_addresses, username, first_name, last_name, image_url } =
       evt.data
 
-    const user: User = {
+    const user = {
       clerkID: id,
       email: email_addresses[0].email_address,
       username,
