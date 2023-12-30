@@ -1,12 +1,11 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { clerkClient } from '@clerk/nextjs'
-import { NextResponse } from 'next/server'
-import { createUserAction } from '@/lib/actions/user.actions'
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
+  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
+  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -50,35 +49,37 @@ export async function POST(req: Request) {
     })
   }
 
-  // Get the ID and type
-  const { id } = evt.data
+  // sync with db
   const eventType = evt.type
 
-  // start syncing
-  if (eventType === 'user.created') {
-    const { id, email_addresses, username, first_name, last_name, image_url } =
-      evt.data
-
-    const user = {
-      clerkID: id,
-      email: email_addresses[0].email_address,
-      username,
-      firstName: first_name,
-      lastName: last_name,
-      photo: image_url,
-    }
-
-    const newUser = await createUserAction(user)
-
-    if (newUser) {
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: {
-          userId: newUser.clerkID,
+  switch (eventType) {
+    case 'user.created':
+      await db.user.create({
+        data: {
+          clerkId: evt.data.id,
+          username: evt.data.username!,
+          imageUrl: evt.data.image_url,
         },
       })
-    }
-
-    return NextResponse.json({ message: 'OK', user: newUser })
+      break
+    case 'user.updated':
+      await db.user.update({
+        where: {
+          clerkId: evt.data.id,
+        },
+        data: {
+          username: evt.data.username!,
+          imageUrl: evt.data.image_url,
+        },
+      })
+      break
+    case 'user.deleted':
+      await db.user.delete({
+        where: {
+          clerkId: evt.data.id,
+        },
+      })
+      break
   }
 
   return new Response('', { status: 200 })
