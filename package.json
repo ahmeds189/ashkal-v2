@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "prisma:generate && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
+    "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.1",
