@@ -1,10 +1,10 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { type User } from '../../../../node_modules/.prisma/client'
-import { createUserAction } from '@/lib/actions/user.actions'
+import { type User } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
+import { createUserAction } from '@/lib/actions/user.actions'
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
