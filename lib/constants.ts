@@ -7,8 +7,8 @@ export const NAV_ITEMS = [
     icon: Home,
   },
   {
-    path: '/create',
-    title: 'Create Event',
+    path: '/products/create',
+    title: 'Sell a Product',
     icon: PackagePlus,
   },
   {
