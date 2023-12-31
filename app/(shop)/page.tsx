@@ -1,9 +1,14 @@
+import { getCategoriesAction } from '@/actions/category.actions'
+import AddCategoryForm from '@/components/feature/category/form'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Star } from 'lucide-react'
 import Link from 'next/link'
 
-export default function Page() {
+export default async function Page() {
+  const cat = await getCategoriesAction()
+  console.log(cat)
+
   return (
     <>
       <section>
@@ -40,6 +45,11 @@ export default function Page() {
             Explorer now
           </Link>
         </div>
+      </section>
+
+      <section className='py-10'>
+        <AddCategoryForm />
+        {cat?.map((cat) => cat.name)}
       </section>
     </>
   )
