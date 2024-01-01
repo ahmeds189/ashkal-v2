@@ -3,7 +3,8 @@ import { auth } from '@clerk/nextjs'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export default async function Page() {
-  const { userId }: { userId: string | null } = auth()
+  const { sessionClaims } = auth()
+  const userId = sessionClaims?.userId as string
 
   return (
     <div className='container py-10'>
