@@ -8,55 +8,57 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  imageUrl String @db.Text
-  clerkId  String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  orders Order[]
+  id        String    @id @default(cuid())
+  username  String    @unique
+  firstName String
+  lastName  String
+  imageUrl  String    @db.Text
+  clerkId   String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orders    Order[]
+  products  Product[]
 
   @@map("users")
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  name     String
-  Products Product[]
+  id       String    @id @default(cuid())
+  name     String    @db.VarChar(15)
+  products Product[]
 
   @@map("categories")
 }
 
 model Product {
-  id          String  @id @default(uuid())
-  title       String
-  description String  @db.Text
-  imgageUrl   String  @db.Text
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(100)
+  description String   @db.Text
+  imageUrl    String   @db.Text
+  fileUrl     String   @db.Text
   price       Int
   isFree      Boolean
   credit      String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  Orders Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  publisherId String
+  publisher   User     @relation(fields: [publisherId], references: [id])
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
 
   @@map("products")
 }
 
 model Order {
-  id String @id @default(uuid())
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
-
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  stripeId        String    @unique
+  totalAmount     String
+  orderedProducts Product[]
+  buyerId         String
+  buyer           User      @relation(fields: [buyerId], references: [id])
 
   @@map("orders")
 }
