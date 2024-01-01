@@ -59,6 +59,8 @@ export async function POST(req: Request) {
           clerkId: evt.data.id,
           username: evt.data.username!,
           imageUrl: evt.data.image_url,
+          firstName: evt.data.first_name,
+          lastName: evt.data.last_name,
         },
       })
       break
@@ -70,6 +72,8 @@ export async function POST(req: Request) {
         data: {
           username: evt.data.username!,
           imageUrl: evt.data.image_url,
+          firstName: evt.data.first_name,
+          lastName: evt.data.last_name,
         },
       })
       break
