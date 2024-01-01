@@ -1,23 +1,18 @@
 'use server'
 
 import { db } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
 
 export async function addCategoryAction(name: string) {
-  try {
-    await db.category.create({
-      data: {
-        name: name,
-      },
-    })
-  } catch (error) {
-    console.log(error)
-  }
+  return await db.category.create({
+    data: {
+      name: name,
+    },
+  })
 }
 
 export async function getCategoriesAction() {
-  try {
-    return await db.category.findMany()
-  } catch (error) {
-    console.log(error)
-  }
+  const data = await db.category.findMany()
+  revalidatePath('/products/create')
+  return data
 }
