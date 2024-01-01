@@ -34,17 +34,16 @@ export default function AddCategoryForm() {
   })
 
   async function onSubmit(values: categoryFormType) {
-    console.log(values)
-    form.reset()
+    await addCategoryAction(values.name)
     setOpenDialog(false)
     toast.success('category added successfully!')
-    await addCategoryAction(values.name)
+    form.reset()
   }
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button size='icon'>
+        <Button size='icon' variant='outline'>
           <PlusCircle />
         </Button>
       </DialogTrigger>
