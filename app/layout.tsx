@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
+import Providers from '@/components/providers'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang='en' className='dark'>
-      <ClerkProvider>
+      <Providers>
         <body className={poppins.className}>{children}</body>
-      </ClerkProvider>
+      </Providers>
     </html>
   )
 }
