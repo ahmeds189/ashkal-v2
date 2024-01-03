@@ -1,6 +1,6 @@
+import AddCategoryForm from '@/components/feature/category/form'
 import AddProductForm from '@/components/feature/product/form'
 import { auth } from '@clerk/nextjs'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export default async function Page() {
   const { sessionClaims } = auth()
@@ -16,8 +16,7 @@ export default async function Page() {
         Please fill all the field below to publish your product.
       </p>
       <AddProductForm userId={userId} type='create' />
-
-      <ReactQueryDevtools />
+      <AddCategoryForm />
     </div>
   )
 }

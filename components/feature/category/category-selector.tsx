@@ -1,5 +1,4 @@
 'use clinet'
-import { getCategoriesAction } from '@/actions/category.actions'
 import {
   Select,
   SelectContent,
@@ -7,34 +6,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { cn } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
-import { Loader } from 'lucide-react'
 
 type Props = {
   onValueChange?: () => void
   value?: string
 }
 
-export default function CategorySelector({ onValueChange, value }: Props) {
-  const { data, isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => getCategoriesAction(),
-  })
+/* {isLoading && <Loader className='mx-auto animate-spin' /> */
 
+// data.map((category) => (
+//   <SelectItem key={category.id} value={category.id}>
+//     {category.name}
+//   </SelectItem>
+// ))
+
+export default function CategorySelector({ onValueChange, value }: Props) {
   return (
     <Select onValueChange={onValueChange} defaultValue={value}>
       <SelectTrigger>
         <SelectValue placeholder='Category' />
       </SelectTrigger>
-      <SelectContent className={cn(isLoading && 'py-4')}>
-        {isLoading && <Loader className='mx-auto animate-spin' />}
-        {data &&
-          data.map((category) => (
-            <SelectItem key={category.id} value={category.id}>
-              {category.name}
-            </SelectItem>
-          ))}
+      <SelectContent>
+        <p className='py-4 text-center text-sm text-muted-foreground'>
+          no categories found!
+        </p>
       </SelectContent>
     </Select>
   )

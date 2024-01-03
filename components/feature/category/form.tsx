@@ -1,14 +1,11 @@
 'use client'
-import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { categoryFormSchema, categoryFormType } from '@/lib/validator'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import {
   Form,
@@ -17,14 +14,16 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
-import { PlusCircle } from 'lucide-react'
+import { useCategoryForm } from '@/lib/store'
+import { categoryFormSchema, categoryFormType } from '@/lib/validator'
+import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
 import { addCategoryAction } from '@/actions/category.actions'
+import { toast } from 'sonner'
 
 export default function AddCategoryForm() {
-  const [openDialog, setOpenDialog] = useState(false)
+  const { isOpen, onClose } = useCategoryForm()
 
   const form = useForm<categoryFormType>({
     resolver: zodResolver(categoryFormSchema),
@@ -33,42 +32,41 @@ export default function AddCategoryForm() {
     },
   })
 
-  async function onSubmit(values: categoryFormType) {
-    await addCategoryAction(values.name)
-    setOpenDialog(false)
-    toast.success('category added successfully!')
+  useEffect(() => {
+    if (isOpen === false) form.reset()
+  }, [form, isOpen])
+
+  async function onSubmit(value: categoryFormType) {
+    await addCategoryAction(value.name)
+    onClose()
     form.reset()
+    toast.success('ok')
   }
 
   return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild>
-        <Button size='icon' variant='outline'>
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader className='-translate-y-2'>
-          <DialogTitle>Add new category</DialogTitle>
+        <DialogHeader className='mb-2 -translate-y-1'>
+          <DialogTitle>Add new Category</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder='Icons' {...field} />
+                    <Input placeholder='Icon' {...field} />
                   </FormControl>
-                  <span className='block min-h-5'>
-                    <FormMessage className='text-red-500' />
+                  <span className='block h-5 pt-[8px]'>
+                    <FormMessage />
                   </span>
                 </FormItem>
               )}
             />
             <Button type='submit' disabled={form.formState.isSubmitting}>
-              Submit
+              {form.formState.isSubmitting ? 'submitting...' : 'Submit'}
             </Button>
           </form>
         </Form>
