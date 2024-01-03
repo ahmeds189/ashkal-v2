@@ -1,3 +1,4 @@
+import { getCategoriesAction } from '@/actions/category.actions'
 import AddCategoryForm from '@/components/feature/category/form'
 import AddProductForm from '@/components/feature/product/form'
 import { auth } from '@clerk/nextjs'
@@ -5,6 +6,8 @@ import { auth } from '@clerk/nextjs'
 export default async function Page() {
   const { sessionClaims } = auth()
   const userId = sessionClaims?.userId as string
+  // get categories list and pass it to category selector component
+  const categoriesList = await getCategoriesAction()
 
   return (
     <div className='container py-10'>
@@ -15,7 +18,11 @@ export default async function Page() {
       <p className='pb-10 text-sm text-muted-foreground sm:text-base'>
         Please fill all the field below to publish your product.
       </p>
-      <AddProductForm userId={userId} type='create' />
+      <AddProductForm
+        userId={userId}
+        type='create'
+        categoriesList={categoriesList}
+      />
       <AddCategoryForm />
     </div>
   )

@@ -40,7 +40,7 @@ export default function AddCategoryForm() {
     await addCategoryAction(value.name)
     onClose()
     form.reset()
-    toast.success('ok')
+    toast.success('Category successfully created!')
   }
 
   return (

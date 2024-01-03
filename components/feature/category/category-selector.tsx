@@ -1,4 +1,3 @@
-'use clinet'
 import {
   Select,
   SelectContent,
@@ -6,31 +5,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Category } from '@prisma/client'
 
 type Props = {
   onValueChange?: () => void
   value?: string
+  categoriesList: Category[]
 }
 
-/* {isLoading && <Loader className='mx-auto animate-spin' /> */
+export default function CategorySelector({
+  onValueChange,
+  value,
+  categoriesList,
+}: Props) {
+  let content
 
-// data.map((category) => (
-//   <SelectItem key={category.id} value={category.id}>
-//     {category.name}
-//   </SelectItem>
-// ))
+  if (categoriesList && categoriesList.length > 0) {
+    content = categoriesList.map((category) => (
+      <SelectItem key={category.id} value={category.id}>
+        {category.name}
+      </SelectItem>
+    ))
+  } else if (categoriesList === undefined) {
+    content = (
+      <p className='py-4 text-center text-sm text-muted-foreground'>
+        Loading categories...
+      </p>
+    )
+  } else {
+    content = (
+      <p className='py-4 text-center text-sm text-muted-foreground'>
+        No categories found!
+      </p>
+    )
+  }
 
-export default function CategorySelector({ onValueChange, value }: Props) {
   return (
     <Select onValueChange={onValueChange} defaultValue={value}>
       <SelectTrigger>
         <SelectValue placeholder='Category' />
       </SelectTrigger>
-      <SelectContent>
-        <p className='py-4 text-center text-sm text-muted-foreground'>
-          no categories found!
-        </p>
-      </SelectContent>
+      <SelectContent>{content}</SelectContent>
     </Select>
   )
 }
