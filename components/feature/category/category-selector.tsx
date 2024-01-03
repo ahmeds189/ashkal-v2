@@ -10,7 +10,7 @@ import { Category } from '@prisma/client'
 type Props = {
   onValueChange?: () => void
   value?: string
-  categoriesList: Category[]
+  categoriesList: Category[] | undefined
 }
 
 export default function CategorySelector({
