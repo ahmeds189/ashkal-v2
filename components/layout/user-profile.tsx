@@ -1,13 +1,18 @@
 'use client'
-import { SignedIn, UserButton } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
 import { Loader } from 'lucide-react'
-import { useState } from 'react'
-import { useInterval } from 'usehooks-ts'
+import { useEffect, useState } from 'react'
 
 export default function UserProfile() {
   const [mounted, setIsMounted] = useState(false)
 
-  useInterval(() => setIsMounted(true), 1000)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true)
+    }, 600)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   if (!mounted)
     return (
