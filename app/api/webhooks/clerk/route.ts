@@ -2,6 +2,8 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { db } from '@/lib/db'
+import { clerkClient } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -54,7 +56,7 @@ export async function POST(req: Request) {
 
   switch (eventType) {
     case 'user.created':
-      await db.user.create({
+      const newUser = await db.user.create({
         data: {
           clerkId: evt.data.id,
           username: evt.data.username!,
@@ -63,6 +65,13 @@ export async function POST(req: Request) {
           lastName: evt.data.last_name,
         },
       })
+      if (newUser) {
+        await clerkClient.users.updateUserMetadata(evt.data.id, {
+          publicMetadata: {
+            userId: newUser.id,
+          },
+        })
+      }
       break
     case 'user.updated':
       await db.user.update({

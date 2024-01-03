@@ -1,5 +1,7 @@
 'use client'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { Banknote, Figma, Link2, PlusCircle } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { productFormSchema, productFormType } from '@/lib/validator'
 import {
@@ -11,27 +13,28 @@ import {
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input, InputWithElements } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-
-import CategorySelector from '../category/category-selector'
-import AddCategoryForm from '../category/form'
-import FileUploader from '../file-upload/file-uploader'
-import { useState } from 'react'
-import { Banknote, Figma, Link2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useUploadThing } from '@/lib/uploadthing'
-import { useRouter } from 'next/navigation'
+import { Textarea } from '@/components/ui/textarea'
+import CategorySelector from '../category/category-selector'
+import FileUploader from '../file-upload/file-uploader'
 import { createProductAction } from '@/actions/products.actions'
+import { useCategoryForm } from '@/lib/store'
+import { Category } from '@prisma/client'
+import { formatPrice } from '@/lib/utils'
 
 type Props = {
-  userId: string | null
+  userId: string | undefined
   type: 'create' | 'edit'
+  categoriesList: Category[] | undefined
 }
 
-export default function AddProductForm({ userId, type }: Props) {
+export default function AddProductForm({
+  userId,
+  type,
+  categoriesList,
+}: Props) {
   const [files, setFiles] = useState<File[]>([])
-  const { startUpload } = useUploadThing('imageUploader')
-  const router = useRouter()
+  const { onOpen, isOpen } = useCategoryForm()
 
   const form = useForm<productFormType>({
     resolver: zodResolver(productFormSchema),
@@ -47,35 +50,11 @@ export default function AddProductForm({ userId, type }: Props) {
     },
   })
 
-  async function onSubmit(values: productFormType) {
-    // form.reset()
-    let submittedData
-
-    // upload the image
-    if (files.length > 0) {
-      const uploadImage = await startUpload(files)
-
-      if (uploadImage) {
-        submittedData = { ...values, imageUrl: uploadImage[0].url }
-      }
-    }
-
-    // submit the product
-    if (type === 'create' && userId && submittedData) {
-      try {
-        const newProduct = await createProductAction({
-          product: submittedData,
-          userId: userId,
-        })
-
-        if (newProduct) {
-          form.reset()
-          router.push(`/products/${newProduct.id}`)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  async function onSubmit(product: productFormType) {
+    await createProductAction(
+      { ...product, price: formatPrice(product.price) },
+      userId,
+    )
   }
 
   return (
@@ -88,7 +67,7 @@ export default function AddProductForm({ userId, type }: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder='Product Title*' {...field} />
+                  <Input {...field} placeholder='Product Title*' />
                 </FormControl>
                 <span className='block h-5 pt-[5px]'>
                   <FormMessage />
@@ -106,6 +85,7 @@ export default function AddProductForm({ userId, type }: Props) {
                     <CategorySelector
                       onValueChange={field.onChange}
                       value={field.value}
+                      categoriesList={categoriesList}
                     />
                   </FormControl>
                   <span className='block h-5 pt-[5px]'>
@@ -114,7 +94,14 @@ export default function AddProductForm({ userId, type }: Props) {
                 </FormItem>
               )}
             />
-            <AddCategoryForm />
+            <Button
+              type='button'
+              size='icon'
+              variant='outline'
+              onClick={onOpen}
+            >
+              <PlusCircle />
+            </Button>
           </div>
         </div>
         <div className='sm:grid sm:grid-cols-2 sm:justify-stretch sm:gap-2 md:gap-4'>
@@ -163,6 +150,7 @@ export default function AddProductForm({ userId, type }: Props) {
               <FormItem>
                 <FormControl>
                   <InputWithElements
+                    {...field}
                     icon={
                       <Link2
                         size={18}
@@ -170,7 +158,6 @@ export default function AddProductForm({ userId, type }: Props) {
                       />
                     }
                     placeholder='File Url*'
-                    {...field}
                   />
                 </FormControl>
                 <span className='block h-5 pt-[5px]'>
@@ -186,6 +173,7 @@ export default function AddProductForm({ userId, type }: Props) {
               <FormItem>
                 <FormControl>
                   <InputWithElements
+                    {...field}
                     icon={
                       <Banknote
                         size={18}
@@ -219,7 +207,6 @@ export default function AddProductForm({ userId, type }: Props) {
                     }
                     placeholder='Price*'
                     type='number'
-                    {...field}
                   />
                 </FormControl>
                 <span className='block h-5 pt-[5px]'>
@@ -236,6 +223,7 @@ export default function AddProductForm({ userId, type }: Props) {
             <FormItem className='sm:w-1/2'>
               <FormControl>
                 <InputWithElements
+                  {...field}
                   icon={
                     <Figma
                       size={18}
@@ -243,7 +231,6 @@ export default function AddProductForm({ userId, type }: Props) {
                     />
                   }
                   placeholder='Credit Url'
-                  {...field}
                 />
               </FormControl>
               <span className='block h-5 pt-[5px]'>
@@ -256,7 +243,7 @@ export default function AddProductForm({ userId, type }: Props) {
         <Button
           type='submit'
           size='lg'
-          disabled={form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting || isOpen}
           className='w-full capitalize sm:w-1/2'
         >
           {form.formState.isSubmitting ? 'submitting...' : `${type} product`}

@@ -1,37 +1,33 @@
 'use server'
-
 import { db } from '@/lib/db'
 import { handleError } from '@/lib/utils'
 import { productFormType } from '@/lib/validator'
+import { Category, User } from '@prisma/client'
 
-type CreateEventParams = {
-  product: productFormType
-  userId: string
-}
+export async function createProductAction(
+  product: productFormType,
+  userId: string | undefined,
+) {
+  const product_publisher: User | null = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  })
 
-export async function createProductAction({
-  product,
-  userId,
-}: CreateEventParams) {
+  console.log(product_publisher)
+
+  const product_category: Category | null = await db.category.findUnique({
+    where: {
+      id: product.categoryId,
+    },
+  })
+
   try {
-    // get the publisher id
-    const productPublisher = await db.user.findUnique({
-      where: {
-        id: userId,
-      },
-    })
-    if (!productPublisher) throw new Error('Publisher not found')
-
-    const newProduct = await db.product.create({
-      data: {
-        ...product,
-        price: parseInt(product.price),
-        publisherId: userId,
-        categoryId: product.categoryId,
-      },
-    })
-
-    return JSON.parse(JSON.stringify(newProduct))
+    if (product_publisher && product_category) {
+      console.log('product:', product)
+      console.log('publisher:', product_publisher)
+      console.log('category:', product_category)
+    }
   } catch (error) {
     handleError(error)
   }

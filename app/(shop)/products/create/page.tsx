@@ -4,10 +4,11 @@ import AddProductForm from '@/components/feature/product/form'
 import { auth } from '@clerk/nextjs'
 
 export default async function Page() {
-  const { sessionClaims } = auth()
-  const userId = sessionClaims?.userId as string
   // get categories list and pass it to category selector component
   const categoriesList = await getCategoriesAction()
+  // get userId from db
+  const { sessionClaims } = auth()
+  const userId = sessionClaims?.userId as string
 
   return (
     <div className='container py-10'>
@@ -19,9 +20,9 @@ export default async function Page() {
         Please fill all the field below to publish your product.
       </p>
       <AddProductForm
-        userId={userId}
         type='create'
         categoriesList={categoriesList}
+        userId={userId}
       />
       <AddCategoryForm />
     </div>

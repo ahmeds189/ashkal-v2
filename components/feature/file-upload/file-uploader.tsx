@@ -6,6 +6,7 @@ import { useDropzone } from '@uploadthing/react/hooks'
 import { MonitorUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { convertFileToUrl } from '@/lib/utils'
+import Image from 'next/image'
 
 type Props = {
   onFieldChange: (url: string) => void
@@ -18,10 +19,13 @@ export default function FileUploader({
   onFieldChange,
   setFiles,
 }: Props) {
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    setFiles(acceptedFiles)
-    onFieldChange(convertFileToUrl(acceptedFiles[0]))
-  }, [])
+  const onDrop = useCallback(
+    (acceptedFiles: FileWithPath[]) => {
+      setFiles(acceptedFiles)
+      onFieldChange(convertFileToUrl(acceptedFiles[0]))
+    },
+    [onFieldChange, setFiles],
+  )
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -36,7 +40,7 @@ export default function FileUploader({
       <input {...getInputProps()} className='cursor-pointer' />
 
       {imageUrl ? (
-        <img
+        <Image
           src={imageUrl}
           alt='image'
           width={100}

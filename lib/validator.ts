@@ -11,7 +11,7 @@ export const productFormSchema = z.object({
   description: z.string().min(10).max(400),
   imageUrl: z.string().url(),
   fileUrl: z.string().url(),
-  price: z.string().min(1),
+  price: z.string().or(z.number()),
   isFree: z.boolean().default(false),
   credit: z.string().optional(),
   categoryId: z.string().min(1),
