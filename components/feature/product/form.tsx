@@ -21,6 +21,9 @@ import { createProductAction } from '@/actions/products.actions'
 import { useCategoryForm } from '@/lib/store'
 import { Category } from '@prisma/client'
 import { formatPrice } from '@/lib/utils'
+import { useUploadThing } from '@/lib/uploadthing'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 type Props = {
   userId: string | undefined
@@ -35,6 +38,8 @@ export default function AddProductForm({
 }: Props) {
   const [files, setFiles] = useState<File[]>([])
   const { onOpen, isOpen } = useCategoryForm()
+  const { startUpload } = useUploadThing('imageUploader')
+  const route = useRouter()
 
   const form = useForm<productFormType>({
     resolver: zodResolver(productFormSchema),
@@ -51,10 +56,32 @@ export default function AddProductForm({
   })
 
   async function onSubmit(product: productFormType) {
-    await createProductAction(
-      { ...product, price: formatPrice(product.price) },
-      userId,
-    )
+    let uploadedImageUrl = product.imageUrl
+
+    if (files.length > 0) {
+      const uploadImages = await startUpload(files)
+
+      if (!uploadImages) return
+
+      uploadedImageUrl = uploadImages[0].url
+    }
+
+    if (type === 'create') {
+      try {
+        const newProduct = await createProductAction(
+          {
+            ...product,
+            price: formatPrice(product.price),
+            imageUrl: uploadedImageUrl,
+          },
+          userId,
+        )
+        form.reset()
+        toast.success('Product published successfully')
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   return (

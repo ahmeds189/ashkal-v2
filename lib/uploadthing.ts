@@ -1,4 +1,5 @@
 import type { OurFileRouter } from '@/app/api/uploadthing/core'
 import { generateReactHelpers } from '@uploadthing/react/hooks'
 
-export const { useUploadThing } = generateReactHelpers<OurFileRouter>()
+export const { useUploadThing, uploadFiles } =
+  generateReactHelpers<OurFileRouter>()

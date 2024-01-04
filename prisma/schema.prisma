@@ -31,20 +31,20 @@ model Category {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  title       String   @db.VarChar(100)
-  description String   @db.Text
-  imageUrl    String   @db.Text
-  fileUrl     String   @db.Text
-  price       Float
+  id          String    @id @default(cuid())
+  title       String    @db.VarChar(100)
+  description String    @db.Text
+  imageUrl    String    @db.Text
+  fileUrl     String    @db.Text
+  price       String
   isFree      Boolean
   credit      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
   publisherId String
-  publisher   User     @relation(fields: [publisherId], references: [id])
+  publisher   User      @relation(fields: [publisherId], references: [id])
 
   @@map("products")
 }

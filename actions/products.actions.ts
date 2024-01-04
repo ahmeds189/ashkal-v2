@@ -2,32 +2,45 @@
 import { db } from '@/lib/db'
 import { handleError } from '@/lib/utils'
 import { productFormType } from '@/lib/validator'
-import { Category, User } from '@prisma/client'
+import { Product } from '@prisma/client'
+import { redirect } from 'next/navigation'
 
 export async function createProductAction(
   product: productFormType,
   userId: string | undefined,
 ) {
-  const product_publisher: User | null = await db.user.findUnique({
-    where: {
-      id: userId,
-    },
-  })
-
-  console.log(product_publisher)
-
-  const product_category: Category | null = await db.category.findUnique({
-    where: {
-      id: product.categoryId,
-    },
-  })
+  let newProduct: Partial<Product> = {}
 
   try {
-    if (product_publisher && product_category) {
-      console.log('product:', product)
-      console.log('publisher:', product_publisher)
-      console.log('category:', product_category)
+    if (product && userId) {
+      newProduct = await db.product.create({
+        data: {
+          ...product,
+          categoryId: product.categoryId,
+          publisherId: userId,
+        },
+      })
+      console.log('new product:', newProduct)
     }
+  } catch (error) {
+    handleError(error)
+  }
+
+  if (newProduct !== undefined) redirect(`/products/${newProduct.id}`)
+}
+
+export async function getProductById(id: string) {
+  try {
+    const product = await db.product.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        category: true,
+        publisher: true,
+      },
+    })
+    return product
   } catch (error) {
     handleError(error)
   }

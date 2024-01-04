@@ -12,7 +12,7 @@ export function handleError(error: unknown) {
 
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
-export const formatPrice = (price: number | string): number | string => {
+export const formatPrice = (price: string): string => {
   const amount = typeof price === 'string' ? parseFloat(price) : price
 
   const formattedPrice = new Intl.NumberFormat('en-US', {
@@ -20,5 +20,5 @@ export const formatPrice = (price: number | string): number | string => {
     currency: 'USD',
   }).format(amount)
 
-  return typeof price === 'string' ? formattedPrice : amount
+  return formattedPrice
 }
