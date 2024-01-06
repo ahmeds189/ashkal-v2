@@ -11,8 +11,8 @@ import ThemeToggle from './theme-toggle'
 export default function Header() {
   return (
     <header>
-      <div className='container flex items-center justify-between gap-2 py-4'>
-        <Link href='/' className='block w-fit'>
+      <div className='container grid grid-cols-[1fr_8rem] items-center justify-items-center gap-2 py-4 sm:grid-cols-[8rem_1fr_8rem]'>
+        <Link href='/' className='block w-fit justify-self-start'>
           <span className='sr-only'>click to home page</span>
           <Shapes className='h-9 w-9' />
         </Link>
