@@ -12,7 +12,7 @@ import { useMediaQuery } from 'usehooks-ts'
 import { Separator } from '../ui/separator'
 import NavList from './nav-list'
 import { Button } from '../ui/button'
-import { SignedIn, UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 export default function MobileSheet() {
   const [open, setOpen] = useState(false)
@@ -39,6 +39,10 @@ export default function MobileSheet() {
               }}
             />
           </SignedIn>
+
+          <SignedOut>
+            <span className='me-auto inline-block h-1 w-1' />
+          </SignedOut>
 
           <SheetClose>
             <X />

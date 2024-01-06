@@ -15,7 +15,12 @@ export default function UserProfile() {
   }, [])
 
   if (!mounted)
-    return <Loader size={27} className='animate-spin text-muted-foreground' />
+    return (
+      <Loader
+        size={27}
+        className='hidden animate-spin text-muted-foreground sm:block'
+      />
+    )
 
   return (
     <UserButton
