@@ -2,7 +2,6 @@ import type { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Poppins } from 'next/font/google'
-import ThemeProvider from '@/components/layout/theme-provider'
 import './globals.css'
 
 const poppins = Poppins({
@@ -20,11 +19,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='en'>
+    <html lang='en' className=''>
       <ClerkProvider>
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <body className={poppins.className}>{children}</body>
-        </ThemeProvider>
+        <body className={poppins.className}>{children}</body>
       </ClerkProvider>
     </html>
   )
