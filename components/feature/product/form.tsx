@@ -71,7 +71,6 @@ export default function AddProductForm({
         const newProduct = await createProductAction(
           {
             ...product,
-            price: formatPrice(product.price),
             imageUrl: uploadedImageUrl,
           },
           userId,
@@ -181,7 +180,7 @@ export default function AddProductForm({
                     icon={
                       <Link2
                         size={18}
-                        className='hidden text-muted-foreground xs:block'
+                        className='hidden flex-none text-muted-foreground xs:block'
                       />
                     }
                     placeholder='File Url*'
@@ -204,7 +203,7 @@ export default function AddProductForm({
                     icon={
                       <Banknote
                         size={18}
-                        className='hidden text-muted-foreground xs:block'
+                        className='hidden flex-none text-muted-foreground xs:block'
                       />
                     }
                     element={
@@ -254,7 +253,7 @@ export default function AddProductForm({
                   icon={
                     <Figma
                       size={18}
-                      className='hidden shrink-0 text-muted-foreground xs:block'
+                      className='hidden flex-none shrink-0 text-muted-foreground xs:block'
                     />
                   }
                   placeholder='Credit Url'
