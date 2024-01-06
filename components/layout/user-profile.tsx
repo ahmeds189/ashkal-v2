@@ -15,16 +15,14 @@ export default function UserProfile() {
   }, [])
 
   if (!mounted)
-    return (
-      <Loader className='animate-spin justify-self-end text-muted-foreground' />
-    )
+    return <Loader size={27} className='animate-spin text-muted-foreground' />
 
   return (
     <UserButton
       afterSignOutUrl='/'
       appearance={{
         elements: {
-          rootBox: 'justify-self-end',
+          rootBox: 'inline-block hidden sm:inline-block',
         },
       }}
     />

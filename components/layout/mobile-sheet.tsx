@@ -6,11 +6,13 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet'
-import { X, Menu, Shapes } from 'lucide-react'
+import { X, Menu } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import { Separator } from '../ui/separator'
 import NavList from './nav-list'
+import { Button } from '../ui/button'
+import { SignedIn, UserButton } from '@clerk/nextjs'
 
 export default function MobileSheet() {
   const [open, setOpen] = useState(false)
@@ -19,13 +21,25 @@ export default function MobileSheet() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger className='sm:hidden' onClick={() => setOpen(true)}>
-        <span className='sr-only'>open mobile menu</span>
-        <Menu size={27} />
+      <SheetTrigger className='sm:hidden' onClick={() => setOpen(true)} asChild>
+        <Button variant='ghost' size='icon'>
+          <span className='sr-only'>open mobile menu</span>
+          <Menu />
+        </Button>
       </SheetTrigger>
       <SheetContent className='space-y-6'>
         <header className='flex items-center justify-between'>
-          <Shapes className='h-9 w-9' />
+          <SignedIn>
+            <UserButton
+              afterSignOutUrl='/'
+              appearance={{
+                elements: {
+                  rootBox: 'inline-block',
+                },
+              }}
+            />
+          </SignedIn>
+
           <SheetClose>
             <X />
           </SheetClose>

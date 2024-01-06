@@ -13,9 +13,9 @@ export default withUt({
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: '1rem',
       screens: {
-        '2xl': '95ch',
+        '2xl': '130ch',
       },
     },
     extend: {
