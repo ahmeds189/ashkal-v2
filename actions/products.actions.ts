@@ -1,5 +1,6 @@
 'use server'
 import { db } from '@/lib/db'
+import { GetAllProductsArgs } from '@/lib/types'
 import { handleError } from '@/lib/utils'
 import { productFormType } from '@/lib/validator'
 import { Product } from '@prisma/client'
@@ -35,12 +36,51 @@ export async function getProductById(id: string) {
       where: {
         id: id,
       },
-      select: {
+      include: {
         category: true,
         publisher: true,
       },
     })
     return product
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function getAllProducts({
+  limit = 6,
+  query,
+  category,
+  page,
+}: GetAllProductsArgs) {
+  try {
+    const products = await db.product.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      skip: (page - 1) * limit,
+      include: {
+        category: true,
+        publisher: true,
+      },
+      where: {
+        title: query ? { contains: query, mode: 'insensitive' } : undefined,
+        category: category ? { name: category } : undefined,
+      },
+    })
+
+    const totalProducts = await db.product.count({
+      where: {
+        title: query ? { contains: query, mode: 'insensitive' } : undefined,
+        category: category ? { name: category } : undefined,
+      },
+    })
+
+    const totalPages = Math.ceil(totalProducts / limit)
+
+    return {
+      products,
+      totalPages,
+    }
   } catch (error) {
     handleError(error)
   }
