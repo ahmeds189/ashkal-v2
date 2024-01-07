@@ -1,8 +1,14 @@
+import { getCategoriesAction } from '@/actions/category.actions'
+import { getProductByIdAction } from '@/actions/products.actions'
 import AddProductForm from '@/components/feature/product/form'
+import { SearchParamProps } from '@/lib/types'
 import { auth } from '@clerk/nextjs'
 
-export default function Page() {
-  const { userId }: { userId: string | null } = auth()
+export default async function Page({ params: { id } }: SearchParamProps) {
+  const { sessionClaims } = auth()
+  const userId = sessionClaims?.userId as string
+  const categoriesList = await getCategoriesAction()
+  const productToEdit = await getProductByIdAction(id)
 
   return (
     <div className='container py-10'>
@@ -14,7 +20,15 @@ export default function Page() {
         Please fill all the field below to publish your product.
       </p>
 
-      <AddProductForm userId={userId} type='edit' />
+      {productToEdit && (
+        <AddProductForm
+          userId={userId}
+          type='edit'
+          categoriesList={categoriesList}
+          productToEdit={productToEdit}
+          productId={productToEdit.id}
+        />
+      )}
     </div>
   )
 }
