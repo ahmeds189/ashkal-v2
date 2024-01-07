@@ -1,15 +1,24 @@
 import { buttonVariants } from '@/components/ui/button'
 import HeroLabel from '@/components/layout/hero-label'
 import Link from 'next/link'
+import { getAllProductsAction } from '@/actions/products.actions'
+import Collection from '@/components/feature/product/collection'
 
-export default function Page() {
+export default async function Page() {
+  const products = await getAllProductsAction({
+    query: '',
+    category: '',
+    page: 1,
+    limit: 6,
+  })
+
   return (
-    <div className='container text-balance py-10 text-start sm:text-center'>
+    <div className='container text-balance py-10 text-start antialiased sm:text-center'>
       <HeroLabel />
 
-      <h1 className='py-6 text-3xl font-bold tracking-tight sm:text-4xl'>
+      <h1 className='py-6 text-3xl font-bold tracking-tight sm:text-5xl sm:leading-[3.5rem]'>
         Unleash Creativity with Ashkal, Your{' '}
-        <span className='bg-gradient-to-r from-primary to-blue-600  bg-clip-text text-transparent '>
+        <span className='bg-gradient-to-r from-primary to-blue-600  bg-clip-text text-transparent'>
           Assets Gateway.
         </span>
       </h1>
@@ -24,10 +33,13 @@ export default function Page() {
         href='/'
         className={buttonVariants({
           className: '!rounded-full !px-14 !shadow-sm',
-        })}
-      >
+        })}>
         Explorer now
       </Link>
+
+      {products && (
+        <Collection data={products} limit={6} page={1} totalPages={2} />
+      )}
     </div>
   )
 }

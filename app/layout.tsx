@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='en' className=''>
+    <html lang='en' className='dark'>
       <ClerkProvider>
         <body className={poppins.className}>{children}</body>
       </ClerkProvider>

@@ -35,16 +35,16 @@ export default function FileUploader({
   return (
     <div
       {...getRootProps()}
-      className='cursor-pointer overflow-hidden rounded-md border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
-    >
+      className='cursor-pointer overflow-hidden rounded-md border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'>
       <input {...getInputProps()} className='cursor-pointer' />
 
       {imageUrl ? (
         <Image
           src={imageUrl}
           alt='image'
-          width={100}
-          height={100}
+          width={1000}
+          height={1000}
+          priority
           className='w-full object-cover object-center'
         />
       ) : (
@@ -58,8 +58,7 @@ export default function FileUploader({
             type='button'
             className='rounded-full'
             size='sm'
-            variant='secondary'
-          >
+            variant='secondary'>
             Select from computer
           </Button>
         </div>
