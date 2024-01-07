@@ -7,9 +7,10 @@ export type SearchParamProps = {
 
 export type GetAllProductsArgs = {
   query: string
-  category: string
+  category: string | undefined
   limit: number
   page: number
+  excludeProductId?: string
 }
 
 export type ExtendedProduct = Product & {
@@ -27,4 +28,16 @@ export type ExtendedProduct = Product & {
     createdAt: Date
     updatedAt: Date
   }
+}
+
+export type ProductUpdate = {
+  title?: string
+  description?: string
+  imageUrl?: string
+  fileUrl?: string
+  price?: string
+  isFree?: boolean
+  credit?: string | null
+  categoryId?: string
+  publisherId?: string
 }

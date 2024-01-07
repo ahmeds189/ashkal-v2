@@ -9,7 +9,7 @@ export const productFormSchema = z.object({
   title: z
     .string({ required_error: 'Title is required.' })
     .min(5, 'Title must be at least 5 characters long.')
-    .max(100, 'Title cannot exceed 100 characters.'),
+    .max(70, 'Title cannot exceed 100 characters.'),
   description: z
     .string({ required_error: 'Description is required.' })
     .min(10, 'Description must be at least 10 characters long.')
@@ -21,7 +21,7 @@ export const productFormSchema = z.object({
     .string({ required_error: 'File URL is required.' })
     .url('Invalid URL format for File.'),
   price: z
-    .number({
+    .string({
       required_error: 'Price is required.',
       invalid_type_error: 'Price is required.',
     })
