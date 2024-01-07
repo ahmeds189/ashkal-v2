@@ -1,9 +1,10 @@
 'use server'
 import { db } from '@/lib/db'
-import { GetAllProductsArgs } from '@/lib/types'
+import { GetAllProductsArgs, ProductUpdate } from '@/lib/types'
 import { handleError } from '@/lib/utils'
 import { productFormType } from '@/lib/validator'
 import { Product } from '@prisma/client'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createProductAction(
@@ -30,7 +31,7 @@ export async function createProductAction(
   if (newProduct !== undefined) redirect(`/products/${newProduct.id}`)
 }
 
-export async function getProductById(id: string) {
+export async function getProductByIdAction(id: string) {
   try {
     const product = await db.product.findFirst({
       where: {
@@ -47,11 +48,12 @@ export async function getProductById(id: string) {
   }
 }
 
-export async function getAllProducts({
+export async function getAllProductsAction({
   limit = 6,
   query,
   category,
   page,
+  excludeProductId,
 }: GetAllProductsArgs) {
   try {
     const products = await db.product.findMany({
@@ -65,6 +67,9 @@ export async function getAllProducts({
       where: {
         title: query ? { contains: query, mode: 'insensitive' } : undefined,
         category: category ? { name: category } : undefined,
+        id: excludeProductId
+          ? { not: { equals: excludeProductId } }
+          : undefined,
       },
     })
 
@@ -81,6 +86,43 @@ export async function getAllProducts({
       products,
       totalPages,
     }
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function deleteProductByIdAction(id: string) {
+  try {
+    const product = await db.product.delete({
+      where: {
+        id: id,
+      },
+    })
+    if (product) revalidatePath('/')
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function updateProductAction(
+  userId: string,
+  product: ProductUpdate,
+  productId: string,
+) {
+  try {
+    if (!product) throw new Error('Product not found')
+    if (!userId) throw new Error('Unauthorized')
+    if (product && userId) {
+      await db.product.update({
+        where: {
+          id: productId,
+        },
+        data: {
+          ...product,
+        },
+      })
+    }
+    revalidatePath(`/products/${productId}/edit`)
   } catch (error) {
     handleError(error)
   }
