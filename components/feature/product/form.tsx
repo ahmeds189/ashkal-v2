@@ -17,41 +17,47 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
 import CategorySelector from '../category/category-selector'
 import FileUploader from '../file-upload/file-uploader'
-import { createProductAction } from '@/actions/products.actions'
+import {
+  createProductAction,
+  updateProductAction,
+} from '@/actions/products.actions'
 import { useCategoryForm } from '@/lib/store'
-import { Category } from '@prisma/client'
-import { formatPrice } from '@/lib/utils'
-import { useUploadThing } from '@/lib/uploadthing'
-import { useRouter } from 'next/navigation'
+import { Category, Product } from '@prisma/client'
+import { uploadFiles, useUploadThing } from '@/lib/uploadthing'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   userId: string | undefined
   type: 'create' | 'edit'
   categoriesList: Category[] | undefined
+  productToEdit?: Product
+  productId?: string
 }
 
 export default function AddProductForm({
   userId,
   type,
   categoriesList,
+  productToEdit,
+  productId,
 }: Props) {
   const [files, setFiles] = useState<File[]>([])
   const { onOpen, isOpen } = useCategoryForm()
   const { startUpload } = useUploadThing('imageUploader')
-  const route = useRouter()
+  const router = useRouter()
 
   const form = useForm<productFormType>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      imageUrl: '',
-      fileUrl: '',
-      price: '',
-      isFree: false,
-      credit: '',
-      categoryId: '',
+      title: productToEdit?.title ?? '',
+      description: productToEdit?.description ?? '',
+      imageUrl: productToEdit?.imageUrl ?? '',
+      fileUrl: productToEdit?.fileUrl ?? '',
+      price: productToEdit?.price ?? '',
+      isFree: productToEdit?.isFree ?? false,
+      credit: productToEdit?.credit ?? '',
+      categoryId: productToEdit?.categoryId ?? '',
     },
   })
 
@@ -68,7 +74,7 @@ export default function AddProductForm({
 
     if (type === 'create') {
       try {
-        const newProduct = await createProductAction(
+        await createProductAction(
           {
             ...product,
             imageUrl: uploadedImageUrl,
@@ -77,6 +83,17 @@ export default function AddProductForm({
         )
         form.reset()
         toast.success('Product published successfully')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (type === 'edit' && userId && product && productId) {
+      try {
+        await updateProductAction(userId, product, productId)
+        form.reset()
+        toast.success('Product updated successfully')
+        router.push(`/products/${productId}`)
       } catch (error) {
         console.log(error)
       }
@@ -124,8 +141,7 @@ export default function AddProductForm({
               type='button'
               size='icon'
               variant='outline'
-              onClick={onOpen}
-            >
+              onClick={onOpen}>
               <PlusCircle />
             </Button>
           </div>
@@ -221,8 +237,7 @@ export default function AddProductForm({
                                 />
                                 <label
                                   htmlFor='isFree'
-                                  className='whitespace-nowrap'
-                                >
+                                  className='whitespace-nowrap'>
                                   Free
                                 </label>
                               </div>
@@ -270,8 +285,7 @@ export default function AddProductForm({
           type='submit'
           size='lg'
           disabled={form.formState.isSubmitting || isOpen}
-          className='w-full capitalize sm:w-1/2'
-        >
+          className='w-full capitalize sm:w-1/2'>
           {form.formState.isSubmitting ? 'submitting...' : `${type} product`}
         </Button>
       </form>
