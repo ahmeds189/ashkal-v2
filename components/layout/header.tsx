@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import MobileSheet from './mobile-sheet'
 import UserProfile from './user-profile'
 import NavList from './nav-list'
+import Cart from './cart'
 
 export default function Header() {
   return (
@@ -34,9 +35,7 @@ export default function Header() {
             <UserProfile />
           </SignedIn>
 
-          <Button size='icon' variant='ghost'>
-            <ShoppingCart />
-          </Button>
+          <Cart />
 
           <MobileSheet />
         </div>
