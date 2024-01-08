@@ -44,8 +44,8 @@ export default async function Page({
       </section>
 
       <section className='container space-y-8 py-10'>
-        <h2 className='text-2xl font-bold'>
-          Explore Limitless Possibilities with Ashkal
+        <h2 className='line-clamp-2 text-2xl font-bold sm:leading-[2.5rem]'>
+          Explore Limitless <br /> Possibilities with Ashkal
         </h2>
         <Search />
         {products && (

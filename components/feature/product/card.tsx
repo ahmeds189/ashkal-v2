@@ -26,7 +26,7 @@ export default function Card({ product }: Props) {
   const isProductPublisher = userId === publisherId
 
   return (
-    <div className='group relative grid min-h-[22rem] grid-rows-[15rem_1fr] flex-col rounded-lg border text-start shadow-sm transition-colors hover:bg-secondary/40 md:min-h-[24rem] lg:max-w-[24rem]'>
+    <div className='group relative grid min-h-[22rem] grid-rows-[15rem_1fr] flex-col rounded-xl border text-start shadow-sm transition-colors hover:bg-secondary/40 md:min-h-[24rem] lg:max-w-[24rem]'>
       <Link
         style={{ backgroundImage: `url(${productImageUrl})` }}
         className='block rounded-t-md bg-cover bg-center'
