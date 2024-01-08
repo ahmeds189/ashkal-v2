@@ -20,7 +20,7 @@ export default function Collection({
 }: Props) {
   if (products.length > 0) {
     return (
-      <section className='py-10'>
+      <>
         <ul className='grid gap-y-6 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3 lg:gap-4'>
           {products.map((product) => (
             <li key={product.id}>
@@ -28,13 +28,13 @@ export default function Collection({
             </li>
           ))}
         </ul>
-      </section>
+      </>
     )
   }
   return (
-    <section className='mt-8 rounded-md bg-secondary py-28 text-center'>
-      <h3 className='text-2xl font-bold'>No Products Found</h3>
+    <div className='grid min-h-[22rem] place-content-center gap-2 bg-secondary/40 text-center md:min-h-[24rem]'>
+      <h3 className='text-xl font-bold'>No Products Found :(</h3>
       <small className='text-muted-foreground'>comeback later!</small>
-    </section>
+    </div>
   )
 }

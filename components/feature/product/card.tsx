@@ -1,5 +1,4 @@
-import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ExtendedProduct } from '@/lib/types'
 import { formatPrice } from '@/lib/utils'
@@ -7,6 +6,7 @@ import { auth } from '@clerk/nextjs'
 import { PenSquare } from 'lucide-react'
 import Link from 'next/link'
 import DeleteProduct from './delete-product'
+import { Badge } from '@/components/ui/badge'
 
 type Props = {
   product: ExtendedProduct
@@ -26,7 +26,7 @@ export default function Card({ product }: Props) {
   const isProductPublisher = userId === publisherId
 
   return (
-    <div className='group relative grid min-h-[22rem] grid-rows-[15rem_1fr] flex-col rounded-lg border text-start transition-colors hover:bg-secondary md:min-h-[24rem] lg:max-w-[24rem]'>
+    <div className='group relative grid min-h-[22rem] grid-rows-[15rem_1fr] flex-col rounded-lg border text-start shadow-sm transition-colors hover:bg-secondary/40 md:min-h-[24rem] lg:max-w-[24rem]'>
       <Link
         style={{ backgroundImage: `url(${productImageUrl})` }}
         className='block rounded-t-md bg-cover bg-center'

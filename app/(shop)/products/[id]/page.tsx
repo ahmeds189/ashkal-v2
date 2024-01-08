@@ -32,8 +32,8 @@ export default async function Page({ params: { id } }: SearchParamProps) {
     } = product
     return (
       <>
-        <section className='bg-secondary/70 sm:py-12'>
-          <div className='items-center sm:container md:grid md:grid-cols-2 md:gap-4 lg:gap-8'>
+        <section className='bg-secondary/40 sm:py-12'>
+          <div className='sm:container md:grid md:grid-cols-2 md:gap-4 lg:gap-8'>
             <Image
               src={productImageUrl}
               alt={title}

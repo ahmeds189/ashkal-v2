@@ -15,7 +15,7 @@ export default withUt({
       center: true,
       padding: '1rem',
       screens: {
-        '2xl': '130ch',
+        '2xl': '108ch',
       },
     },
     extend: {

@@ -6,6 +6,7 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode
   element?: React.ReactNode
+  parentStyles?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -26,9 +27,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input'
 
 const InputWithElements = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ children, className, type, element, icon, ...props }, ref) => {
+  (
+    { children, className, type, parentStyles, element, icon, ...props },
+    ref,
+  ) => {
     return (
-      <div className='flex h-10 items-center gap-1 rounded-md border border-input bg-background px-2 ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-visible:outline-none disabled:cursor-wait'>
+      <div
+        className={cn(
+          'flex h-10 basis-3/4 items-center gap-1 rounded-md border border-input bg-background px-2 ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-visible:outline-none disabled:cursor-wait',
+          parentStyles,
+        )}>
         {icon}
         <input
           type={type}
