@@ -27,7 +27,7 @@ export const productFormSchema = z.object({
     })
     .min(1, 'Price must be at least 1.'),
   isFree: z.boolean().default(false),
-  credit: z.string().url('Invalid URL format for Credit.').optional(),
+  credit: z.string().url().optional(),
   categoryId: z
     .string({ required_error: 'Category is required.' })
     .min(1, 'Category must be at least 1 character long.'),
