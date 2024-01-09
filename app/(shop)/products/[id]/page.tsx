@@ -32,7 +32,7 @@ export default async function Page({ params: { id } }: SearchParamProps) {
     } = product
     return (
       <>
-        <section className='bg-secondary/40 sm:py-12'>
+        <section className='bg-secondary/40 sm:py-20'>
           <div className='sm:container md:grid md:grid-cols-2 md:gap-4 lg:gap-8'>
             <Image
               src={productImageUrl}
@@ -83,8 +83,8 @@ export default async function Page({ params: { id } }: SearchParamProps) {
           </div>
         </section>
 
-        <section className='container mt-8'>
-          <h5 className='text-2xl font-bold'>Similar Products</h5>
+        <section className='container my-10 space-y-4'>
+          <h5 className='text-xl font-semibold'>Similar Products</h5>
           {relatedProducts && (
             <Collection data={relatedProducts} limit={3} page={1} />
           )}
