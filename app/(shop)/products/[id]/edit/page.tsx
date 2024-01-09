@@ -5,8 +5,7 @@ import { SearchParamProps } from '@/lib/types'
 import { auth } from '@clerk/nextjs'
 
 export default async function Page({ params: { id } }: SearchParamProps) {
-  const { sessionClaims } = auth()
-  const userId = sessionClaims?.userId as string
+  const { userId } = auth()
   const categoriesList = await getCategoriesAction()
   const productToEdit = await getProductByIdAction(id)
 
