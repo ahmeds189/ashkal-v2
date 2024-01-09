@@ -2,8 +2,6 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { db } from '@/lib/db'
-import { clerkClient } from '@clerk/nextjs'
-import { redirect } from 'next/navigation'
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -51,48 +49,48 @@ export async function POST(req: Request) {
     })
   }
 
-  // sync with db
-  const eventType = evt.type
-
-  switch (eventType) {
-    case 'user.created':
-      const newUser = await db.user.create({
-        data: {
-          clerkId: evt.data.id,
-          username: evt.data.username!,
-          imageUrl: evt.data.image_url,
-          firstName: evt.data.first_name,
-          lastName: evt.data.last_name,
-        },
-      })
-      if (newUser) {
-        await clerkClient.users.updateUserMetadata(evt.data.id, {
-          publicMetadata: {
-            userId: newUser.id,
+  if (evt) {
+    try {
+      if (evt.type === 'user.created') {
+        await db.user.create({
+          data: {
+            id: evt.data.id,
+            clerkId: evt.data.id,
+            username: evt.data.username ?? 'anonymous',
+            firstName: evt.data.first_name,
+            lastName: evt.data.last_name,
+            imageUrl: evt.data.image_url,
+            email: evt.data.email_addresses[0]?.email_address,
           },
         })
       }
-      break
-    case 'user.updated':
-      await db.user.update({
-        where: {
-          clerkId: evt.data.id,
-        },
-        data: {
-          username: evt.data.username!,
-          imageUrl: evt.data.image_url,
-          firstName: evt.data.first_name,
-          lastName: evt.data.last_name,
-        },
+      if (evt.type === 'user.updated') {
+        await db.user.update({
+          where: {
+            id: evt.data.id,
+          },
+          data: {
+            id: evt.data.id,
+            clerkId: evt.data.id,
+            username: evt.data.username ?? 'anonymous',
+            firstName: evt.data.first_name,
+            lastName: evt.data.last_name,
+            imageUrl: evt.data.image_url,
+            email: evt.data.email_addresses[0]?.email_address,
+          },
+        })
+      }
+      if (evt.type === 'user.deleted') {
+        await db.user.delete({
+          where: { id: evt.data.id },
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      return new Response('Error occured -- processing webhook data', {
+        status: 500,
       })
-      break
-    case 'user.deleted':
-      await db.user.delete({
-        where: {
-          clerkId: evt.data.id,
-        },
-      })
-      break
+    }
   }
 
   return new Response('', { status: 200 })
