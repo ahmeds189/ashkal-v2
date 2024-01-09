@@ -6,9 +6,7 @@ import { auth } from '@clerk/nextjs'
 export default async function Page() {
   // get categories list and pass it to category selector component
   const categoriesList = await getCategoriesAction()
-  // get userId from db
-  const { sessionClaims } = auth()
-  const userId = sessionClaims?.userId as string
+  const { userId } = auth()
 
   return (
     <div className='container py-10'>

@@ -21,8 +21,7 @@ export default function Card({ product }: Props) {
     category,
     publisher: { firstName, lastName, id: publisherId },
   } = product
-  const { sessionClaims } = auth()
-  const userId = sessionClaims?.userId as string
+  const { userId } = auth()
   const isProductPublisher = userId === publisherId
 
   return (
